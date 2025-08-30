@@ -2,89 +2,141 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Event Cash Form</title>
+  <title>Event Cash Collection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .event { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
-    .totals { font-weight: bold; margin-top: 10px; }
-    button { margin-top: 10px; }
+    body { padding: 20px; }
+    .event-card { margin-bottom: 20px; }
   </style>
 </head>
 <body>
 
-<h2>Event Cash Collection</h2>
-<form id="cashForm" method="POST" action="https://formspree.io/f/xzzaedng">
-  <div id="events"></div>
-  <button type="button" onclick="addEvent()">+ Add Another Event</button>
-  <br><br>
-  <input type="submit" value="Submit All Events">
-</form>
+<div class="container">
+  <h2 class="mb-4">Event Cash Collection</h2>
+  
+  <form id="cashForm">
+    <div id="events"></div>
+    <button type="button" class="btn btn-secondary mb-3" id="addEventBtn">+ Add Another Event</button>
+    <br>
+    <button type="submit" class="btn btn-primary">Submit All Events</button>
+  </form>
+</div>
 
 <script>
 let eventCount = 0;
 
+// Currency values
+const currencyValues = {
+  nickels: 0.05,
+  dimes: 0.10,
+  quarters: 0.25,
+  loonies: 1,
+  toonies: 2,
+  fives: 5,
+  tens: 10,
+  twenties: 20,
+  fifties: 50,
+  hundreds: 100
+};
+
+// Add a new event form
 function addEvent() {
   eventCount++;
-  const wrapper = document.getElementById("events");
-
-  const div = document.createElement("div");
-  div.className = "event";
-  div.id = `event-${eventCount}`;
-  div.innerHTML = `
-    <h3>Event ${eventCount}</h3>
-    <label>Nickels: <input type="number" name="nickels-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>Dimes: <input type="number" name="dimes-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>Quarters: <input type="number" name="quarters-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>Loonies: <input type="number" name="loonies-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>Toonies: <input type="number" name="toonies-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>$5: <input type="number" name="fives-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>$10: <input type="number" name="tens-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>$20: <input type="number" name="twenties-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>$50: <input type="number" name="fifties-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>$100: <input type="number" name="hundreds-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-    <label>EMT: <input type="number" step="0.01" name="emt-${eventCount}" value="0" oninput="updateTotals(${eventCount})"></label><br>
-
-    <div class="totals">
-      Total Cash: $<span id="cashTotal-${eventCount}">0.00</span><br>
-      Overall Total (Cash + EMT): $<span id="overallTotal-${eventCount}">0.00</span>
-    </div>
-  `;
-
-  wrapper.appendChild(div);
+  const eventHtml = `
+    <div class="card event-card" id="event-${eventCount}">
+      <div class="card-body">
+        <h5 class="card-title">Event ${eventCount}</h5>
+        <div class="row g-2">
+          ${Object.keys(currencyValues).map(key => `
+            <div class="col-md-3">
+              <label class="form-label text-capitalize">${key}</label>
+              <input type="number" class="form-control currency-input" name="${key}-${eventCount}" value="0" min="0">
+            </div>
+          `).join('')}
+          <div class="col-md-3">
+            <label class="form-label">EMT</label>
+            <input type="number" step="0.01" class="form-control emt-input" name="emt-${eventCount}" value="0">
+          </div>
+        </div>
+        <div class="mt-3 fw-bold">
+          Total Cash: $<span id="cashTotal-${eventCount}">0.00</span><br>
+          Overall Total: $<span id="overallTotal-${eventCount}">0.00</span>
+        </div>
+      </div>
+    </div>`;
+  $("#events").append(eventHtml);
 }
 
-function updateTotals(id) {
-  const values = {
-    nickels: 0.05,
-    dimes: 0.10,
-    quarters: 0.25,
-    loonies: 1,
-    toonies: 2,
-    fives: 5,
-    tens: 10,
-    twenties: 20,
-    fifties: 50,
-    hundreds: 100
-  };
-
+// Update totals when inputs change
+function updateTotals(eventId) {
   let cashTotal = 0;
 
-  for (let key in values) {
-    const input = document.querySelector(`[name="${key}-${id}"]`);
-    if (input) {
-      cashTotal += (parseInt(input.value) || 0) * values[key];
-    }
-  }
+  $.each(currencyValues, function(key, val) {
+    const qty = parseInt($(`[name='${key}-${eventId}']`).val()) || 0;
+    cashTotal += qty * val;
+  });
 
-  const emtInput = document.querySelector(`[name="emt-${id}"]`);
-  const emt = parseFloat(emtInput.value) || 0;
+  const emt = parseFloat($(`[name='emt-${eventId}']`).val()) || 0;
 
-  document.getElementById(`cashTotal-${id}`).innerText = cashTotal.toFixed(2);
-  document.getElementById(`overallTotal-${id}`).innerText = (cashTotal + emt).toFixed(2);
+  $(`#cashTotal-${eventId}`).text(cashTotal.toFixed(2));
+  $(`#overallTotal-${eventId}`).text((cashTotal + emt).toFixed(2));
 }
 
-// Start with one event
-addEvent();
+// Handle dynamic updates
+$(document).on("input", ".currency-input, .emt-input", function() {
+  const name = $(this).attr("name");
+  const eventId = name.split("-")[1];
+  updateTotals(eventId);
+});
+
+// Add first event on load
+$(document).ready(function() {
+  addEvent();
+});
+
+// Add another event button
+$("#addEventBtn").click(function() {
+  addEvent();
+});
+
+// Handle form submit
+$("#cashForm").submit(function(e) {
+  e.preventDefault();
+
+  let events = [];
+
+  for (let i = 1; i <= eventCount; i++) {
+    let values = {};
+    $.each(currencyValues, function(key, val) {
+      values[key] = parseInt($(`[name='${key}-${i}']`).val()) || 0;
+    });
+    values.emt = parseFloat($(`[name='emt-${i}']`).val()) || 0;
+
+    let cashTotal = 0;
+    $.each(currencyValues, function(key, val) {
+      cashTotal += values[key] * val;
+    });
+
+    values.cashTotal = cashTotal.toFixed(2);
+    values.overallTotal = (cashTotal + values.emt).toFixed(2);
+
+    events.push(values);
+  }
+
+  // Submit to Google Apps Script
+  fetch("YOUR_GOOGLE_SCRIPT_WEBAPP_URL", {
+    method: "POST",
+    mode: "no-cors", // Google Apps Script requires no-cors
+    body: JSON.stringify({ events: events })
+  }).then(() => {
+    alert("Submission saved to Google Sheet!");
+    $("#cashForm")[0].reset();
+    $("#events").empty();
+    eventCount = 0;
+    addEvent(); // start fresh
+  });
+});
 </script>
 
 </body>
