@@ -9,6 +9,7 @@
     .event-card { margin-bottom: 20px; }
     .remove-btn { float: right; }
     .totals-row { font-weight: bold; }
+	.input-group-text { min-width: 85px; justify-content: end; }	
   </style>
 </head>
 <body class="bg-light">
@@ -37,8 +38,7 @@
             
             <!-- Row 1: Event Name + Date -->
             <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label">Event Name</label>
+              <div class="col-md-2">
                 <select class="form-select event-name">
                   <option>Admission</option>
                   <option>50/50</option>
@@ -46,37 +46,41 @@
                   <option>Other</option>
                 </select>
               </div>
-              <div class="col-md-6">
-                <label class="form-label">Date</label>
+              <div class="col-md-2">
                 <input type="date" class="form-control event-date" value="${today}">
               </div>
             </div>
 
             <!-- Row 2: Coins + Bills -->
             <div class="row mb-3">
-              <div class="col-md-6">
+              <div class="col-md-2">
                 <label class="form-label">Coins</label>
-                <div class="input-group mb-1"><span class="input-group-text">Nickels</span><input type="number" class="form-control nickels" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Dimes</span><input type="number" class="form-control dimes" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Quarters</span><input type="number" class="form-control quarters" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Loonies</span><input type="number" class="form-control loonies" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Toonies</span><input type="number" class="form-control toonies" min="0" value="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">Nickels</span><input type="number" class="form-control nickels" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">Dimes</span><input type="number" class="form-control dimes" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">Quarters</span><input type="number" class="form-control quarters" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">Loonies</span><input type="number" class="form-control loonies" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">Toonies</span><input type="number" class="form-control toonies" min="0" placeholder="0"></div>
                 <div class="mt-2"><strong>Total Coins: $<span class="total-coins">0.00</span></strong></div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-2">
                 <label class="form-label">Bills</label>
-                <div class="input-group mb-1"><span class="input-group-text">$5</span><input type="number" class="form-control fives" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$10</span><input type="number" class="form-control tens" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$20</span><input type="number" class="form-control twenties" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$50</span><input type="number" class="form-control fifties" min="0" value="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$100</span><input type="number" class="form-control hundreds" min="0" value="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">$5</span><input type="number" class="form-control fives" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">$10</span><input type="number" class="form-control tens" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">$20</span><input type="number" class="form-control twenties" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">$50</span><input type="number" class="form-control fifties" min="0" placeholder="0"></div>
+                <div class="input-group mb-1"><span class="input-group-text">$100</span><input type="number" class="form-control hundreds" min="0" placeholder="0"></div>
                 <div class="mt-2"><strong>Total Bills: $<span class="total-bills">0.00</span></strong></div>
               </div>
             </div>
 
             <!-- Totals -->
             <div class="mb-2 totals-row">Total Cash: $<span class="total-cash">0.00</span></div>
-            <div class="mb-2"><label class="form-label">EMT</label><input type="number" class="form-control emt" min="0" value="0"></div>
+			
+			<div class="row mb-3">
+				<div class="col-md-2">
+					<div class="input-group mb-1"><span class="input-group-text">EMT</span><input type="number" class="form-control emt" min="0" placeholder="0"></div>			
+				</div>	
+			</div>
             <div class="mb-2 totals-row">Overall Total: $<span class="total-overall">0.00</span></div>
 
             <!-- Buttons -->
@@ -91,18 +95,18 @@
 
     function attachEventHandlers(card) {
       function recalc() {
-        const nickels = parseInt(card.find(".nickels").val()) * 0.05;
-        const dimes = parseInt(card.find(".dimes").val()) * 0.10;
-        const quarters = parseInt(card.find(".quarters").val()) * 0.25;
-        const loonies = parseInt(card.find(".loonies").val()) * 1.00;
-        const toonies = parseInt(card.find(".toonies").val()) * 2.00;
+        const nickels = parseInt(card.find(".nickels").val() || 0) * 0.05;
+        const dimes = parseInt(card.find(".dimes").val() || 0) * 0.10;
+        const quarters = parseInt(card.find(".quarters").val() || 0) * 0.25;
+        const loonies = parseInt(card.find(".loonies").val() || 0) * 1.00;
+        const toonies = parseInt(card.find(".toonies").val() || 0) * 2.00;
         const totalCoins = nickels + dimes + quarters + loonies + toonies;
 
-        const fives = parseInt(card.find(".fives").val()) * 5;
-        const tens = parseInt(card.find(".tens").val()) * 10;
-        const twenties = parseInt(card.find(".twenties").val()) * 20;
-        const fifties = parseInt(card.find(".fifties").val()) * 50;
-        const hundreds = parseInt(card.find(".hundreds").val()) * 100;
+        const fives = parseInt(card.find(".fives").val() || 0) * 5;
+        const tens = parseInt(card.find(".tens").val() || 0) * 10;
+        const twenties = parseInt(card.find(".twenties").val() || 0) * 20;
+        const fifties = parseInt(card.find(".fifties").val() || 0) * 50;
+        const hundreds = parseInt(card.find(".hundreds").val() || 0) * 100;
         const totalBills = fives + tens + twenties + fifties + hundreds;
 
         const totalCash = totalCoins + totalBills;
@@ -121,6 +125,10 @@
         card.find("input").val(0);
         recalc();
       });
+	  
+	  card.find(".form-select").on("change", function() {
+		card.find(".card-title").text("Event " + $(this).find("option:selected").text());
+	  }).trigger("change");
 
       card.find(".remove-btn").on("click", function() {
         card.remove();
