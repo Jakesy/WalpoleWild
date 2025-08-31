@@ -10,6 +10,10 @@
     .remove-btn { float: right; }
     .totals-row { font-weight: bold; }
 	.input-group-text { min-width: 85px; justify-content: end; }	
+	.italic { font-size: 0.75rem; font-style: italic; }
+	.simple-section, .additional-other { display: none; }
+	optgroup[label="Additional In"] { background-color:#dbf1cc; }
+	optgroup[label="Additional Out"] { background-color:#f5c5c5; }
   </style>
 </head>
 <body class="bg-light">
@@ -24,6 +28,18 @@
   </div>
 
   <script>
+    
+	const additionalIn = ["Season Passes", "Programs", "Other (In)"];
+	
+	const additionalOut = [
+      "Ref Mileage", "Ref Fee", "Announcer", "Security",
+      "50/50 Winner", "Photographer", "Other (Out)"
+    ];
+
+    const normalEvents = [
+      "Admission", "50/50", "Apparel", "Chuck-A-Puck", "Score-O"
+    ];
+	
     let eventCount = 0;
 
     function addEvent() {
@@ -40,48 +56,76 @@
             <div class="row mb-3">
               <div class="col-md-3">
                 <select class="form-select event-name">
-                  <option>Admission</option>
-                  <option>50/50</option>
-                  <option>Apparel</option>
-                  <option>Other</option>
+					${normalEvents.map(e => `<option value="${e}">${e}</option>`).join("")}
+					<optgroup label="Additional In">
+						${additionalIn.map(e => `<option value="${e}">${e}</option>`).join("")}
+					</optgroup>
+					<optgroup label="Additional Out">
+						${additionalOut.map(e => `<option value="${e}">${e}</option>`).join("")}
+					</optgroup>
                 </select>
               </div>
-              <div class="col-md-3">
-                <input type="date" class="form-control event-date" value="${today}">
+              <div class="col-md-3 breakdown-section">
+                <input type="hidden" class="form-control event-date" value="${today}">
+				<div class="input-group mb-1"><span class="input-group-text">Float</span><input type="number" class="form-control float" min="0" placeholder="0"></div>
               </div>
             </div>
 
             <!-- Row 2: Coins + Bills -->
-            <div class="row mb-3">
-              <div class="col-md-3">
-                <label class="form-label">Coins</label>
-                <div class="input-group mb-1"><span class="input-group-text">Nickels</span><input type="number" class="form-control nickels" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Dimes</span><input type="number" class="form-control dimes" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Quarters</span><input type="number" class="form-control quarters" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Loonies</span><input type="number" class="form-control loonies" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">Toonies</span><input type="number" class="form-control toonies" min="0" placeholder="0"></div>
-                <div class="mt-2"><strong>Total Coins: $<span class="total-coins">0.00</span></strong></div>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Bills</label>
-                <div class="input-group mb-1"><span class="input-group-text">$5</span><input type="number" class="form-control fives" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$10</span><input type="number" class="form-control tens" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$20</span><input type="number" class="form-control twenties" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$50</span><input type="number" class="form-control fifties" min="0" placeholder="0"></div>
-                <div class="input-group mb-1"><span class="input-group-text">$100</span><input type="number" class="form-control hundreds" min="0" placeholder="0"></div>
-                <div class="mt-2"><strong>Total Bills: $<span class="total-bills">0.00</span></strong></div>
-              </div>
-            </div>
+			<div class="breakdown-section">
+				<div class="row mb-3">
+				  <div class="col-md-3">
+					<label class="form-label"><b>Coins</b> <span class="italic">(including float)</span></label>
+					<div class="input-group mb-1"><span class="input-group-text">Nickels</span><input type="number" class="form-control nickels" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">Dimes</span><input type="number" class="form-control dimes" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">Quarters</span><input type="number" class="form-control quarters" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">Loonies</span><input type="number" class="form-control loonies" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">Toonies</span><input type="number" class="form-control toonies" min="0" placeholder="0"></div>
+					<div class="mt-2"><strong>Total Coins: $<span class="total-coins">0.00</span></strong></div>
+				  </div>
+				  <div class="col-md-3">
+					<label class="form-label"><b>Bills</b> <span class="italic">(including float)</span></label>
+					<div class="input-group mb-1"><span class="input-group-text">$5</span><input type="number" class="form-control fives" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">$10</span><input type="number" class="form-control tens" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">$20</span><input type="number" class="form-control twenties" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">$50</span><input type="number" class="form-control fifties" min="0" placeholder="0"></div>
+					<div class="input-group mb-1"><span class="input-group-text">$100</span><input type="number" class="form-control hundreds" min="0" placeholder="0"></div>
+					<div class="mt-2"><strong>Total Bills: $<span class="total-bills">0.00</span></strong></div>
+				  </div>
+				</div>
 
-            <!-- Totals -->
-            <div class="mb-2 totals-row">Total Cash: $<span class="total-cash">0.00</span></div>
-			
-			<div class="row mb-3">
-				<div class="col-md-3">
-					<div class="input-group mb-1"><span class="input-group-text">EMT</span><input type="number" class="form-control emt" min="0" placeholder="0"></div>			
-				</div>	
+				<!-- Totals -->
+				<div class="mb-2 totals-row">Total Cash: $<span class="total-cash">0.00</span></div>
+				
+				<div class="row mb-3">
+					<div class="col-md-3">
+						<div class="input-group mb-1"><span class="input-group-text">EMT</span><input type="number" class="form-control emt" min="0" placeholder="0"></div>		
+					</div>
+				</div>
 			</div>
-            <div class="mb-2 totals-row">Overall Total: $<span class="total-overall">0.00</span></div>
+			<div class="simple-section">
+				<div class="row mb-3 additional-other">
+					<div class="col-md-3">
+						<div class="input-group mb-1"><span class="input-group-text">Name</span><input type="text" class="form-control other-name"></div>		
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-md-3">
+						<div class="input-group mb-1"><span class="input-group-text">Amount</span><input type="number" class="form-control amount" min="0" placeholder="0"></div>		
+					</div>
+					<div class="col-md-3">				
+						<div class="input-group mb-1"><span class="input-group-text">Payment Type</span>
+							<select class="form-select payment-type">
+								<option>EMT</option>
+								<option>Cash</option>
+								<option>Cheque</option>
+							</select>
+						</div>
+					</div>	
+				</div>
+			</div>
+			
+            <div class="mb-2 totals-row">Overall <span class="total-event"></span>Total: $<span class="total-overall">0.00</span></div>
 
             <!-- Buttons -->
             <button type="button" class="btn btn-warning btn-sm clear-event">Clear Values</button>
@@ -94,49 +138,100 @@
     }
 
     function attachEventHandlers(card) {
-      function recalc() {
-        const nickels = parseInt(card.find(".nickels").val() || 0) * 0.05;
-        const dimes = parseInt(card.find(".dimes").val() || 0) * 0.10;
-        const quarters = parseInt(card.find(".quarters").val() || 0) * 0.25;
-        const loonies = parseInt(card.find(".loonies").val() || 0) * 1.00;
-        const toonies = parseInt(card.find(".toonies").val() || 0) * 2.00;
-        const totalCoins = nickels + dimes + quarters + loonies + toonies;
+		function recalc() {
 
-        const fives = parseInt(card.find(".fives").val() || 0) * 5;
-        const tens = parseInt(card.find(".tens").val() || 0) * 10;
-        const twenties = parseInt(card.find(".twenties").val() || 0) * 20;
-        const fifties = parseInt(card.find(".fifties").val() || 0) * 50;
-        const hundreds = parseInt(card.find(".hundreds").val() || 0) * 100;
-        const totalBills = fives + tens + twenties + fifties + hundreds;
+		if(card.find(".breakdown-section").is(":visible")){
+			const startingFloat = parseInt(card.find(".float").val() || 0);
+			
+			const nickels = parseInt(card.find(".nickels").val() || 0) * 0.05;
+			const dimes = parseInt(card.find(".dimes").val() || 0) * 0.10;
+			const quarters = parseInt(card.find(".quarters").val() || 0) * 0.25;
+			const loonies = parseInt(card.find(".loonies").val() || 0) * 1.00;
+			const toonies = parseInt(card.find(".toonies").val() || 0) * 2.00;
+			const totalCoins = nickels + dimes + quarters + loonies + toonies;
 
-        const totalCash = totalCoins + totalBills;
-        const emt = parseFloat(card.find(".emt").val()) || 0;
-        const overall = totalCash + emt;
+			const fives = parseInt(card.find(".fives").val() || 0) * 5;
+			const tens = parseInt(card.find(".tens").val() || 0) * 10;
+			const twenties = parseInt(card.find(".twenties").val() || 0) * 20;
+			const fifties = parseInt(card.find(".fifties").val() || 0) * 50;
+			const hundreds = parseInt(card.find(".hundreds").val() || 0) * 100;
+			const totalBills = fives + tens + twenties + fifties + hundreds;
 
-        card.find(".total-coins").text(totalCoins.toFixed(2));
-        card.find(".total-bills").text(totalBills.toFixed(2));
-        card.find(".total-cash").text(totalCash.toFixed(2));
-        card.find(".total-overall").text(overall.toFixed(2));
-      }
+			const totalCash = totalCoins + totalBills;
+			const emt = parseFloat(card.find(".emt").val()) || 0;
+			const overall = totalCash + emt;
 
-      card.find("input").on("input", recalc);
+			card.find(".total-coins").text(totalCoins.toFixed(2));
+			card.find(".total-bills").text(totalBills.toFixed(2));
+			card.find(".total-cash").text(totalCash.toFixed(2));
+			card.find(".total-overall").text(overall.toFixed(2));
+		}
+		else
+		{		
+			var amount = parseInt(card.find(".amount").val() || 0);
+			card.find(".total-overall").text(amount.toFixed(2));
+		}
+		}
 
-      card.find(".clear-event").on("click", function() {
-        card.find("input").val(0);
-        recalc();
-      });
+		card.find("input").on("input", recalc);
+
+		card.find(".clear-event").on("click", function() {
+			card.find("input").val("");
+			recalc();
+		});
+
+		card.find(".form-select.event-name").on("change", function() {
+			var selectedOption = $(this).find("option:selected").text();
+			card.find(".card-title").text("Event " + selectedOption);
+			card.find(".total-event").text(selectedOption + " ");
+			
+			if(normalEvents.includes(selectedOption))
+			{
+				card.css("background-color","white");
+			}
+			else if (additionalIn.includes(selectedOption))
+			{
+				card.css("background-color", "#dbf1cc");
+			}
+			else{
+				card.css("background-color", "#f5c5c5");
+			}
+		}).trigger("change");
+
+		card.find(".remove-btn").on("click", function() {
+			card.remove();
+		});
+
+		function toggleSections(card) {
+			const eventName = card.find(".event-name").val();
+			card.find("input").val("");
+		  
+			card.find(".additional-other").hide();
+		  
+			if (normalEvents.includes(eventName)) {
+				card.find(".breakdown-section").show();
+				card.find(".simple-section").hide();
+				recalc();
+			} else {
+				card.find(".breakdown-section").hide();
+				card.find(".simple-section").show();
+			
+				if(eventName.toLowerCase().indexOf("other") !== -1)
+				{
+					card.find(".additional-other").show();
+				}
+			
+				recalc();
+			}
+		}
+	
+		$(document).on("input change", ".event-name", function(){
+			toggleSections($(this).closest(".event-card"));
+		});
 	  
-	  card.find(".form-select").on("change", function() {
-		card.find(".card-title").text("Event " + $(this).find("option:selected").text());
-	  }).trigger("change");
-
-      card.find(".remove-btn").on("click", function() {
-        card.remove();
-      });
-
-      recalc();
+		recalc();
     }
-
+	  
     $("#addEvent").on("click", addEvent);
 
     $("#cashForm").on("submit", function(e) {
@@ -146,7 +241,8 @@
         const card = $(this);
         events.push({
           eventName: card.find(".event-name").val(),
-          date: card.find(".event-date").val(),
+          eventDate: card.find(".event-date").val(),
+		  startingFloat: parseInt(card.find(".float").val()) || 0,
           nickels: parseInt(card.find(".nickels").val()) || 0,
           dimes: parseInt(card.find(".dimes").val()) || 0,
           quarters: parseInt(card.find(".quarters").val()) || 0,
@@ -159,6 +255,9 @@
           hundreds: parseInt(card.find(".hundreds").val()) || 0,
           cashTotal: parseFloat(card.find(".total-cash").text()),
           emt: parseFloat(card.find(".emt").val()) || 0,
+		  otherName: card.find(".other-name").val(),
+		  additionalAmountInOut: parseFloat(card.find(".amount").val()) || 0,
+		  paymentType: card.find(".payment-type").val(),
           overallTotal: parseFloat(card.find(".total-overall").text())
         });
       });
