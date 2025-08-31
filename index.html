@@ -28,13 +28,13 @@
 		<div class="card-body">
 			<h5 class="card-title">Comments</h5>
 			<div class="row mb-3">
-				<div class="col">
+				<div class="col-12">
 					<textarea class="form-control comments" rows="5"># of Adults: 0, # of Seniors: 0, # of Students: 0, # of Youth: 0, # of Season Tickets Presented: 0, # of PJHL Passes Presented: 0</textarea>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mb-3">
 				<h5 class="card-title">Submitter Initials</h5>
-				<div class="col-md-2">
+				<div class="col-12 col-md-2">
 					<input type="text" class="form-control submitter" />
 				</div>
 			</div>
@@ -82,8 +82,9 @@
             
             <!-- Row 1: Event Name + Date -->
             <div class="row mb-3">
-              <div class="col-md-3">
+              <div class="col-12 col-md-3">
                 <select class="form-select event-name">
+					<option value="">-- Select Event --</option>
 					${normalEvents.map(e => `<option value="${e}">${e}</option>`).join("")}
 					<optgroup label="Additional In">
 						${additionalIn.map(e => `<option value="${e}">${e}</option>`).join("")}
@@ -93,7 +94,7 @@
 					</optgroup>
                 </select>
               </div>
-              <div class="col-md-3 breakdown-section">
+              <div class="col-12 col-md-3 breakdown-section">
                 <input type="hidden" class="form-control event-date" value="${today}">
 				<div class="input-group mb-1"><span class="input-group-text">Float</span><input type="number" class="form-control float" min="0" placeholder="0"></div>
               </div>
@@ -102,7 +103,7 @@
             <!-- Row 2: Coins + Bills -->
 			<div class="breakdown-section">
 				<div class="row mb-3">
-				  <div class="col-md-3">
+				  <div class="col-12 col-md-3">
 					<label class="form-label"><b>Coins</b> <span class="italic">(including float)</span></label>
 					<div class="input-group mb-1"><span class="input-group-text">Nickels</span><input type="number" class="form-control nickels" min="0" placeholder="0"></div>
 					<div class="input-group mb-1"><span class="input-group-text">Dimes</span><input type="number" class="form-control dimes" min="0" placeholder="0"></div>
@@ -111,7 +112,7 @@
 					<div class="input-group mb-1"><span class="input-group-text">Toonies</span><input type="number" class="form-control toonies" min="0" placeholder="0"></div>
 					<div class="mt-2"><strong>Total Coins: $<span class="total-coins">0.00</span></strong></div>
 				  </div>
-				  <div class="col-md-3">
+				  <div class="col-12 col-md-3">
 					<label class="form-label"><b>Bills</b> <span class="italic">(including float)</span></label>
 					<div class="input-group mb-1"><span class="input-group-text">$5</span><input type="number" class="form-control fives" min="0" placeholder="0"></div>
 					<div class="input-group mb-1"><span class="input-group-text">$10</span><input type="number" class="form-control tens" min="0" placeholder="0"></div>
@@ -126,22 +127,22 @@
 				<div class="mb-2 totals-row">Total Cash: $<span class="total-cash">0.00</span></div>
 				
 				<div class="row mb-3">
-					<div class="col-md-3">
+					<div class="col-12 col-md-3">
 						<div class="input-group mb-1"><span class="input-group-text">EMT</span><input type="number" class="form-control emt" min="0" placeholder="0"></div>		
 					</div>
 				</div>
 			</div>
 			<div class="simple-section">
 				<div class="row mb-3 additional-other">
-					<div class="col-md-3">
-						<div class="input-group mb-1"><span class="input-group-text">Name</span><input type="text" class="form-control other-name"></div>		
+					<div class="col-12 col-md-3">
+						<div class="input-group mb-1"><span class="input-group-text">Name</span><input type="text" class="form-control other-name" style="border: 1px solid red;" placeholder="Required"></div>		
 					</div>
 				</div>
 				<div class="row mb-3">
-					<div class="col-md-3">
+					<div class="col-12 col-md-3">
 						<div class="input-group mb-1"><span class="input-group-text">Amount</span><input type="number" class="form-control amount" min="0" placeholder="0"></div>		
 					</div>
-					<div class="col-md-3">				
+					<div class="col-12 col-md-3">				
 						<div class="input-group mb-1"><span class="input-group-text">Payment Type</span>
 							<select class="form-select payment-type">
 								<option>EMT</option>
@@ -168,40 +169,67 @@
     function attachEventHandlers(card) {
 		function recalc() {
 
-		if(card.find(".breakdown-section").is(":visible")){
-			const startingFloat = parseInt(card.find(".float").val() || 0);
-			
-			const nickels = parseInt(card.find(".nickels").val() || 0) * 0.05;
-			const dimes = parseInt(card.find(".dimes").val() || 0) * 0.10;
-			const quarters = parseInt(card.find(".quarters").val() || 0) * 0.25;
-			const loonies = parseInt(card.find(".loonies").val() || 0) * 1.00;
-			const toonies = parseInt(card.find(".toonies").val() || 0) * 2.00;
-			const totalCoins = nickels + dimes + quarters + loonies + toonies;
+			if(card.find(".breakdown-section").is(":visible")){
+				const startingFloat = parseInt(card.find(".float").val() || 0);
+				
+				const nickels = parseInt(card.find(".nickels").val() || 0) * 0.05;
+				const dimes = parseInt(card.find(".dimes").val() || 0) * 0.10;
+				const quarters = parseInt(card.find(".quarters").val() || 0) * 0.25;
+				const loonies = parseInt(card.find(".loonies").val() || 0) * 1.00;
+				const toonies = parseInt(card.find(".toonies").val() || 0) * 2.00;
+				const totalCoins = nickels + dimes + quarters + loonies + toonies;
 
-			const fives = parseInt(card.find(".fives").val() || 0) * 5;
-			const tens = parseInt(card.find(".tens").val() || 0) * 10;
-			const twenties = parseInt(card.find(".twenties").val() || 0) * 20;
-			const fifties = parseInt(card.find(".fifties").val() || 0) * 50;
-			const hundreds = parseInt(card.find(".hundreds").val() || 0) * 100;
-			const totalBills = fives + tens + twenties + fifties + hundreds;
+				const fives = parseInt(card.find(".fives").val() || 0) * 5;
+				const tens = parseInt(card.find(".tens").val() || 0) * 10;
+				const twenties = parseInt(card.find(".twenties").val() || 0) * 20;
+				const fifties = parseInt(card.find(".fifties").val() || 0) * 50;
+				const hundreds = parseInt(card.find(".hundreds").val() || 0) * 100;
+				const totalBills = fives + tens + twenties + fifties + hundreds;
 
-			const totalCash = totalCoins + totalBills;
-			const emt = parseFloat(card.find(".emt").val()) || 0;
-			const overall = totalCash + emt;
+				const totalCash = totalCoins + totalBills;
+				const emt = parseFloat(card.find(".emt").val()) || 0;
+				const overall = totalCash + emt;
 
-			card.find(".total-coins").text(totalCoins.toFixed(2));
-			card.find(".total-bills").text(totalBills.toFixed(2));
-			card.find(".total-cash").text(totalCash.toFixed(2));
-			card.find(".total-overall").text(overall.toFixed(2));
+				card.find(".total-coins").text(totalCoins.toFixed(2));
+				card.find(".total-bills").text(totalBills.toFixed(2));
+				card.find(".total-cash").text(totalCash.toFixed(2));
+				card.find(".total-overall").text(overall.toFixed(2));
+			}
+			else
+			{		
+				var amount = parseInt(card.find(".amount").val() || 0);
+				card.find(".total-overall").text(amount.toFixed(2));
+			}
 		}
-		else
-		{		
-			var amount = parseInt(card.find(".amount").val() || 0);
-			card.find(".total-overall").text(amount.toFixed(2));
-		}
+		
+		function validateForm() {
+			let valid = true;
+
+			// Submitter initials required
+			if (!$(".comments-card .submitter").val().trim()) 
+				valid = false;
+
+			// Each event must have required fields
+			$(".event-card").each(function() {
+				const $c = $(this);
+				const eventName = $c.find(".event-name").val();
+				if (!eventName) 
+					valid = false;
+
+				// For Other (In/Out) require name
+				if (eventName.toLowerCase().includes("other")) {
+					if (!$c.find(".other-name").val().trim()) 
+						valid = false;
+				}
+			});
+
+			// Disable/enable submit
+			$("#cashForm button[type='submit']").prop("disabled", !valid);
 		}
 
 		card.find("input").on("input", recalc);
+		
+		card.on("input change", "input, select", validateForm);
 
 		card.find(".clear-event").on("click", function() {
 			card.find("input").val("");
@@ -209,9 +237,19 @@
 		});
 
 		card.find(".form-select.event-name").on("change", function() {
-			var selectedOption = $(this).find("option:selected").text();
+			var selectedOption = $(this).val();			
 			card.find(".card-title").text("Event " + selectedOption);
 			card.find(".total-event").text(selectedOption + " ");
+			
+			const duplicates = $(".event-card .event-name").not(this)
+				.map((i, el) => $(el).val())
+				.get();
+
+			if (normalEvents.includes(selectedOption) && duplicates.includes(selectedOption)) {
+				alert(`Duplicate event "${selectedOption}" not allowed.`);
+				$(this).val(""); // reset
+				return;
+			}
 			
 			if(normalEvents.includes(selectedOption))
 			{
@@ -221,13 +259,20 @@
 			{
 				card.css("background-color", "#dbf1cc");
 			}
-			else{
+			else if (additionalOut.includes(selectedOption)){
 				card.css("background-color", "#f5c5c5");
 			}
+			else{
+				card.css("background-color","white");
+			}
+			
+			toggleSections(card);
+			validateForm();
 		}).trigger("change");
 
 		card.find(".remove-btn").on("click", function() {
 			card.remove();
+			validateForm();
 		});
 
 		function toggleSections(card) {
@@ -257,6 +302,7 @@
 			toggleSections($(this).closest(".event-card"));
 		});
 	  
+		validateForm();
 		recalc();
     }
 	  
