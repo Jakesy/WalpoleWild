@@ -383,7 +383,7 @@ $("#cashForm").on("submit", function(e){
   const comments=$(".comments").val();
   const submitter=$(".submitter").val();
 
-  fetch("APP_URL", { 
+  fetch("https://script.google.com/macros/s/AKfycbzjofaA94ETOsvneoK8P9CqA7FwK7A-V5TFT9AScqjxzjuI-0MOInt3NtpHOR-s0oCPhA/exec", { 
     method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
     body: JSON.stringify({events, comments, submitter})
   }).then(()=>{
