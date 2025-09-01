@@ -14,7 +14,7 @@
   .appName h2 div { text-align: center; }
   .event-card, .comments-card { margin-bottom: 20px; }
   .btn-success { float:right; margin-right: 1rem; }
-  .remove-btn { float: right; }
+  .remove-btn, .clear-event { float: right; }
   .totals-row { font-weight: bold; }
   .input-group-text { min-width: 85px; justify-content: end; }  
   .italic { font-size: 0.75rem; font-style: italic; }
@@ -30,15 +30,12 @@
 	}
 	.submitter { width: 35% }
 
-  /* Mobile adjustments 
-  @media (max-width: 576px) {
-    .btn, .form-control, .form-select { margin-bottom: 0.5rem; }
-    .remove-btn, .clear-event { float: none !important; display: block; width: 100%; margin-top: 0.5rem; }
-    .totals-row { font-size: 1rem; }
-    .input-group-text { font-size: 0.9rem; padding: 0.25rem 0.5rem; margin-bottom: 0.5rem; }
-    textarea.form-control { min-height: 100px; }
-    .breakdown-section > .row > div { flex: 0 0 100%; max-width: 100%; margin-bottom: 0.5rem; }
-  }*/
+  #thankYou {
+	display:none; 
+	text-align:center; 
+	margin-top:2rem;
+	color: white;
+  }  
   
   /* Mobile Compact Styles */
 @media (max-width: 576px) {
@@ -111,12 +108,18 @@
           <h5 class="card-title">Submitter Initials</h5>
           <input type="text" class="form-control submitter" placeholder="Required"/>
         </div>
+		<div class="mb-3">
+			<div class="overall-total-cash">Overall Total Cash Handed IN: $<span class="overall-total-cash-amount">0.00</span></div>
+		</div>
+		<div class="mb-3">
+			<div class="overall-total-revenue">Overall Revenue <span class="italic">(excluding floats)</span>: $<span class="overall-total-revenue-amount">0.00</span></div>
+		</div>
       </div>
     </div>
     <button type="submit" class="btn btn-success mb-3" disabled>Submit All</button>
   </form>
 
-  <div id="thankYou" style="display:none; text-align:center; margin-top:2rem;">
+  <div id="thankYou">
     <h2 class="mb-3">✅ Thank you for your submission!</h2>
     <button class="btn btn-primary" onclick="location.reload()">Submit Another</button>
   </div>  
@@ -211,8 +214,10 @@ function addEvent() {
       </div>
     </div>
 
-    <div class="mb-2 totals-row">Overall <span class="total-event"></span>Total: $<span class="total-overall">0.00</span></div>
-    <button type="button" class="btn btn-warning btn-sm clear-event">Clear Values</button>
+    <div class="mb-2 totals-row">Overall <span class="total-event"></span>Total: $<span class="total-overall">0.00</span>
+	<button type="button" class="btn btn-warning btn-sm clear-event">Clear Values</button>
+	</div>
+    
   </div>
 </div>
   `;
@@ -239,14 +244,17 @@ function attachEventHandlers(card){
       const totalCash = totalCoins+totalBills;
       const emt = parseFloat(card.find(".emt").val()||0);
       const overall = totalCash + emt;
+	  
       card.find(".total-coins").text(totalCoins.toFixed(2));
       card.find(".total-bills").text(totalBills.toFixed(2));
       card.find(".total-cash").text(totalCash.toFixed(2));
-      card.find(".total-overall").text(overall.toFixed(2));
+      card.find(".total-overall").text(overall.toFixed(2));	  
     } else {
       const amount = parseFloat(card.find(".amount").val()||0);
       card.find(".total-overall").text(amount.toFixed(2));
     }
+		
+	calculateTotals();
   }
 
   card.on("input change", "input, select", function(){
@@ -287,6 +295,47 @@ function attachEventHandlers(card){
     card.remove(); 
     validateForm(); 
   });
+}
+
+function calculateTotals()
+{
+	var totalFloat = 0,cashHandedIn = 0,emt = 0,overallRevenue = 0;
+	
+	$(".total-cash").each(function() { 
+		cashHandedIn += parseFloat($(this).text() || 0); 
+	});
+	
+	$(".float:visible").each(function() {
+		totalFloat += parseFloat($(this).val() || 0); 
+	});
+	
+	$(".emt:visible").each(function() {
+		emt += parseFloat($(this).val() || 0); 
+	});
+	
+	$(".simple-section:visible").each(function() {
+		var eventName = $(this).parent().find(".form-select.event-name").val();
+		var paymentType = $(this).find(".payment-type").val();
+		var amount = parseFloat($(this).find(".amount").val() || 0);
+		
+		if(additionalIn.includes(eventName)){
+			if(paymentType == "Cash")
+				cashHandedIn += amount;
+			else
+				emt += amount;
+		}
+		else{
+			if(paymentType == "Cash")
+				cashHandedIn -= amount;
+			else
+				emt -= amount;
+		}
+	});
+	
+	overallRevenue = cashHandedIn + emt - totalFloat;	
+		
+	$(".overall-total-cash-amount").text(cashHandedIn.toFixed(2));
+	$(".overall-total-revenue-amount").text(overallRevenue.toFixed(2));
 }
 
 // --- Form Validation ---
@@ -337,6 +386,7 @@ function validateForm() {
   $("#cashForm button[type='submit']").prop("disabled", !valid);
 }
 
+
 // --- Initialization ---
 $(document).ready(function(){ 
   $("#overlay").hide(); 
@@ -383,10 +433,12 @@ $("#cashForm").on("submit", function(e){
 
   const comments=$(".comments").val();
   const submitter=$(".submitter").val();
+  const totalCashHandedIn = parseFloat($(".overall-total-cash-amount").text() || 0);
+  const totalRevenue = parseFloat($(".overall-total-revenue-amount").text() || 0);
 
   fetch("https://script.google.com/macros/s/AKfycbzjofaA94ETOsvneoK8P9CqA7FwK7A-V5TFT9AScqjxzjuI-0MOInt3NtpHOR-s0oCPhA/exec", { 
     method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({events, comments, submitter})
+    body: JSON.stringify({events, comments, submitter, totalCashHandedIn, totalRevenue})
   }).then(()=>{
     $("#overlay").hide();
     $("#cashForm").hide(); 
