@@ -29,6 +29,15 @@
 	  margin: 0 auto 1rem auto; /* center and add bottom margin */
 	}
 	.submitter { width: 35% }
+	.sticky-bottom {
+		background-color: teal;
+		margin: 0rem 3rem;
+		color:white;
+		padding: 0 4rem 0 4rem;
+	}
+	.overall-total-cash-amount, .overall-total-revenue-amount {
+		font-style: italic;
+	}
 
   #thankYou {
 	display:none; 
@@ -108,14 +117,20 @@
           <h5 class="card-title">Submitter Initials</h5>
           <input type="text" class="form-control submitter" placeholder="Required"/>
         </div>
-		<div class="mb-3">
-			<div class="overall-total-cash">Overall Total Cash Handed IN: $<span class="overall-total-cash-amount">0.00</span></div>
-		</div>
-		<div class="mb-3">
-			<div class="overall-total-revenue">Overall Revenue <span class="italic">(excluding floats)</span>: $<span class="overall-total-revenue-amount">0.00</span></div>
-		</div>
       </div>
     </div>
+
+<div class="sticky-bottom card mb-3">
+	<div class="card-body">
+		<div class="mb-3">
+			<div class="overall-total-cash"><b>Overall Total Cash Handed IN</b>: <span class="float-end overall-total-cash-amount">0.00</span><i class="float-end">$</i></div>
+		</div>
+		<div class="mb-3">
+			<div class="overall-total-revenue"><b>Overall Revenue</b> <span class="italic">(excluding floats):</span> <span class="float-end overall-total-revenue-amount">0.00</span><i class="float-end">$</i></div>
+		</div>
+	</div>
+</div>
+
     <button type="submit" class="btn btn-success mb-3" disabled>Submit All</button>
   </form>
 
@@ -207,7 +222,7 @@ function addEvent() {
         <div class="col-12 col-md-5">
           <div class="input-group mb-1"><span class="input-group-text">Payment Type</span>
             <select class="form-select payment-type">
-              <option>EMT</option><option>Cash</option><option>Cheque</option>
+              <option>Cash</option><option>EMT</option><option>Cheque</option>
             </select>
           </div>
         </div>
