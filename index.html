@@ -152,9 +152,10 @@ function addEvent() {
           <optgroup label="Additional In">${additionalIn.map(e=>`<option value="${e}">${e}</option>`).join("")}</optgroup>
           <optgroup label="Additional Out">${additionalOut.map(e=>`<option value="${e}">${e}</option>`).join("")}</optgroup>
         </select>
+		
+        <input type="hidden" class="form-control event-date" value="${today}">
       </div>
       <div class="col-12 col-md-5 breakdown-section">
-        <input type="hidden" class="form-control event-date" value="${today}">
         <div class="input-group mb-1"><span class="input-group-text">Float</span><input type="number" class="form-control float" min="0" placeholder="0"></div>
       </div>
     </div>
@@ -254,7 +255,7 @@ function attachEventHandlers(card){
   });
 
   card.find(".clear-event").on("click", function(){
-    card.find("input").val(""); 
+    card.find("input:visible").val(""); 
     recalc(); 
     validateForm(); 
   });
@@ -268,7 +269,7 @@ function attachEventHandlers(card){
     else if(additionalOut.includes(val)) card.css("background-color","#f5c5c5");
     else card.css("background-color","white");
 
-    card.find("input").val("");
+    card.find("input:visible").val("");
     card.find(".additional-other").hide();
     if(val.toLowerCase().includes("other")) card.find(".additional-other").show();
     if(normalEvents.includes(val)) {
