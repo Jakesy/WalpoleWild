@@ -44,6 +44,9 @@
 		justify-content: center;
 		align-items: center;
 	}
+	.dn {
+		display: none;
+	}
 
   #thankYou {
 	display:none; 
@@ -137,7 +140,8 @@
 	</div>
 </div>
 
-	<div class="recaptcha-container">
+	<div class="recaptcha-container d-flex flex-column">
+		<div class="alert alert-danger dn" role="alert">Please fill out captcha.</div>
 		<div class="g-recaptcha" data-sitekey="6LfK2borAAAAAGVUlYI2tczR-gOhbfv-1nznx-P5"></div>
 	</div>
     <button type="submit" class="btn btn-success mb-3" disabled>Submit All</button>
@@ -428,10 +432,14 @@ $("#addEvent").on("click", addEvent);
 // --- Form Submission ---
 $("#cashForm").on("submit", function(e){
   e.preventDefault(); 
+  $(".dn").hide();
   
 	// Get the reCAPTCHA response
 	var response = grecaptcha.getResponse();
-	if(response.length !== 0) {		
+	if(response.length === 0) {
+		$(".dn").show();
+	}
+	else{		
 		$("#overlay").show();
 
 		const events=[];
