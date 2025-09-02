@@ -262,65 +262,66 @@ $(document).ready(function(){
   });
   
   $("#addEvent").on("click", addEvent);
-});
-
-
-
-// --- Form Submission ---
-$("#cashForm").on("submit", function(e){
-  e.preventDefault(); 
-  $(".dn").hide();
   
-	// Get the reCAPTCHA response
-	var response = grecaptcha.getResponse();
-	if(response.length === 0) {
-		$(".dn").show();
-	}
-	else{		
-		$("#overlay").show();
+  // --- Form Submission ---
+	$(".btn-submit").on("click", function(e){
+	  e.preventDefault(); 
+	  $(".dn").hide();
+	  
+		// Get the reCAPTCHA response
+		var response = grecaptcha.getResponse();
+		if(response.length === 0) {
+			$(".dn").show();
+		}
+		else{		
+			$("#overlay").show();
 
-		const events=[];
-		$(".event-card").each(function(){
-			const c=$(this);
-			events.push({
-				eventName: c.find(".event-name").val(),
-				eventDate: c.find(".event-date").val(),
-				startingFloat: parseInt(c.find(".float").val()||0),
-				nickels: parseInt(c.find(".nickels").val()||0),
-				dimes: parseInt(c.find(".dimes").val()||0),
-				quarters: parseInt(c.find(".quarters").val()||0),
-				loonies: parseInt(c.find(".loonies").val()||0),
-				toonies: parseInt(c.find(".toonies").val()||0),
-				fives: parseInt(c.find(".fives").val()||0),
-				tens: parseInt(c.find(".tens").val()||0),
-				twenties: parseInt(c.find(".twenties").val()||0),
-				fifties: parseInt(c.find(".fifties").val()||0),
-				hundreds: parseInt(c.find(".hundreds").val()||0),
-				cashTotal: parseFloat(c.find(".total-cash").text()),
-				emt: parseFloat(c.find(".emt").val()||0),
-				otherName: c.find(".other-name").val(),
-				additionalAmountInOut: parseFloat(c.find(".amount").val()||0),
-				paymentType: c.find(".payment-type").val(),
-				overallTotal: parseFloat(c.find(".total-overall").text())
+			const events=[];
+			$(".event-card").each(function(){
+				const c=$(this);
+				events.push({
+					eventName: c.find(".event-name").val(),
+					eventDate: c.find(".event-date").val(),
+					startingFloat: parseInt(c.find(".float").val()||0),
+					nickels: parseInt(c.find(".nickels").val()||0),
+					dimes: parseInt(c.find(".dimes").val()||0),
+					quarters: parseInt(c.find(".quarters").val()||0),
+					loonies: parseInt(c.find(".loonies").val()||0),
+					toonies: parseInt(c.find(".toonies").val()||0),
+					fives: parseInt(c.find(".fives").val()||0),
+					tens: parseInt(c.find(".tens").val()||0),
+					twenties: parseInt(c.find(".twenties").val()||0),
+					fifties: parseInt(c.find(".fifties").val()||0),
+					hundreds: parseInt(c.find(".hundreds").val()||0),
+					cashTotal: parseFloat(c.find(".total-cash").text()),
+					emt: parseFloat(c.find(".emt").val()||0),
+					otherName: c.find(".other-name").val(),
+					additionalAmountInOut: parseFloat(c.find(".amount").val()||0),
+					paymentType: c.find(".payment-type").val(),
+					overallTotal: parseFloat(c.find(".total-overall").text())
+				});
 			});
-		});
 
-		const comments=$(".comments").val();
-		const submitter=$(".submitter").val();
-		const totalCashHandedIn = parseFloat($(".overall-total-cash-amount").text() || 0);
-		const totalRevenue = parseFloat($(".overall-total-revenue-amount").text() || 0);
-		const recaptchaToken = response;
+			const comments=$(".comments").val();
+			const submitter=$(".submitter").val();
+			const totalCashHandedIn = parseFloat($(".overall-total-cash-amount").text() || 0);
+			const totalRevenue = parseFloat($(".overall-total-revenue-amount").text() || 0);
+			const recaptchaToken = response;
 
-		fetch("https://script.google.com/macros/s/AKfycbzjofaA94ETOsvneoK8P9CqA7FwK7A-V5TFT9AScqjxzjuI-0MOInt3NtpHOR-s0oCPhA/exec", { 
-			method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
-			body: JSON.stringify({events, comments, submitter, totalCashHandedIn, totalRevenue, recaptchaToken})
-		}).then(()=>{
-			$("#overlay").hide();
-			$("#cashForm").hide(); 
-			$("#thankYou").show();
-		}).catch(err=>{ 
-			$("#overlay").hide(); 
-			alert("Error submitting form: "+err.message); 
-		});
-	}
+			fetch("https://script.google.com/macros/s/AKfycbzjofaA94ETOsvneoK8P9CqA7FwK7A-V5TFT9AScqjxzjuI-0MOInt3NtpHOR-s0oCPhA/exec", { 
+				method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
+				body: JSON.stringify({events, comments, submitter, totalCashHandedIn, totalRevenue, recaptchaToken})
+			}).then(()=>{
+				$("#overlay").hide();
+				$("#cashForm").hide(); 
+				$("#thankYou").show();
+			}).catch(err=>{ 
+				$("#overlay").hide(); 
+				alert("Error submitting form: "+err.message); 
+			});
+		}
+	});
 });
+
+
+
